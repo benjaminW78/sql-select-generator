@@ -1,4 +1,4 @@
-# sql-select-generator [![Build Status](https://travis-ci.org/MathRobin/sql-select-generator.svg)](https://travis-ci.org/MathRobin/koa-select) [![Code Climate](https://codeclimate.com/github/MathRobin/koa-select/badges/gpa.svg)](https://codeclimate.com/github/MathRobin/sql-select-generator)
+# sql-select-generator [![Build Status](https://travis-ci.org/MathRobin/sql-select-generator.svg)](https://travis-ci.org/MathRobin/sql-select-generator) [![Code Climate](https://codeclimate.com/github/MathRobin/sql-select-generator/badges/gpa.svg)](https://codeclimate.com/github/MathRobin/sql-select-generator)
 
 SQL query SELECT generator
 
