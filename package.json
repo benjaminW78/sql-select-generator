@@ -4,7 +4,7 @@
   "subdomain": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MathRobin/sql-select-generator.git"
+    "url": "git+https://github.com/MathRobin/sql-select-generator.git"
   },
   "domains": [],
   "scripts": {
