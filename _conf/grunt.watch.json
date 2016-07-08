@@ -1,0 +1,14 @@
+{
+  "js": {
+    "files": [
+      "*.js",
+      "tests/**/*.js"
+    ],
+    "tasks": [
+      "shell:test"
+    ],
+    "options": {
+      "spawn": false
+    }
+  }
+}

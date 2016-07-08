@@ -1,0 +1,11 @@
+{
+  "eslint": [
+    "*.js",
+    "tests/**/*.js"
+  ],
+  "jsonlint": [
+    "*.json",
+    "_conf/**/*.json",
+    "tests/**/*.json"
+  ]
+}
