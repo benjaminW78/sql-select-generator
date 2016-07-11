@@ -15,7 +15,7 @@ jest.autoMockOff();
  .order('name')
  .order(['id', 'age'])
  .order({label: 'address', order: 'DESC'})
- .getString(); // SELECT id, name FROM example;
+ .toString(); // SELECT id, name FROM example;
  */
 
 describe('sqlSelect', function () {
@@ -122,6 +122,94 @@ describe('sqlSelect', function () {
         it('must be a function', function () {
             expect(typeof sqlString.columns).toBe('function');
         });
+
+        it('must return an object', function () {
+            expect(typeof sqlString.columns('id')).toBe('object');
+            expect(typeof sqlString.columns(['id'])).toBe('object');
+            expect(typeof sqlString.columns(['name', 'age'])).toBe('object');
+            expect(typeof sqlString.columns({label: 'id'})).toBe('object');
+            expect(typeof sqlString.columns({
+                label: 'id',
+                alias: 'i'
+            })).toBe('object');
+            expect(typeof sqlString.columns([{
+                label: 'id',
+                alias: 'i'
+            }, {
+                label: 'name',
+                alias: 'n'
+            }])).toBe('object');
+            expect(typeof sqlString.columns(['id', {
+                label: 'name',
+                alias: 'n'
+            }])).toBe('object');
+            expect(typeof sqlString.columns([{
+                label: 'id',
+                alias: 'i'
+            }, 'name'])).toBe('object');
+            expect(typeof sqlString.columns([{
+                label: 'id',
+                alias: 'i'
+            }, 'name', {
+                label: 'age',
+                alias: 'a'
+            }])).toBe('object');
+            expect(typeof sqlString.columns(['id', {
+                label: 'name',
+                alias: 'n'
+            }, 'age'])).toBe('object');
+        });
+
+        it('must throw an exception', function () {
+            expect(function () {
+                sqlString.columns();
+            }).toThrow();
+            expect(function () {
+                sqlString.columns('');
+            }).toThrow();
+            expect(function () {
+                sqlString.columns({});
+            }).toThrow();
+            expect(function () {
+                sqlString.columns({});
+            }).toThrow();
+            expect(function () {
+                sqlString.columns({alias: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(null);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(NaN);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(true);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(false);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(0);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(1);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(-1);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(42);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(-18);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(Infinity);
+            }).toThrow();
+            expect(function () {
+                sqlString.columns(-Infinity);
+            }).toThrow();
+        });
     });
 
     describe('#order', function () {
@@ -134,13 +222,13 @@ describe('sqlSelect', function () {
         });
     });
 
-    describe('#getString', function () {
+    describe('#toString', function () {
         beforeEach(function () {
             sqlString = sqlSelect();
         });
 
         it('must be a function', function () {
-            expect(typeof sqlString.getString).toBe('function');
+            expect(typeof sqlString.toString).toBe('function');
         });
     });
 });
