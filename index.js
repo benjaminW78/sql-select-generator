@@ -36,8 +36,44 @@ module.exports = function () {
         join: function () {
 
         },
-        columns: function () {
+        columns: function (columns) {
+            const
+                localErrorBadArguments = errorBadArguments + ' #from() need a non-empty string argument or object with label property at least.',
+                result = {
+                    list: []
+                };
+            let columnsTmp = columns;
 
+            if (!Array.isArray(columns)) {
+                columnsTmp = [columns];
+            }
+
+            columnsTmp.forEach(function (column) {
+                if ('string' === typeof column && '' !== column.trim()) {
+                    result.list.push({
+                        label: column
+                    });
+                } else if ('object' === typeof column) {
+                    if ('string' === typeof column.label && '' !== column.label.trim()) {
+                        const
+                            resultTmp = {};
+
+                        resultTmp.label = column.label.trim();
+                        if (undefined !== column.alias) {
+                            resultTmp.alias = column.alias;
+                        }
+                        result.list.push(resultTmp);
+                    } else {
+                        throw localErrorBadArguments;
+                    }
+                } else {
+                    throw localErrorBadArguments;
+                }
+            });
+
+            description.columns = result;
+
+            return this;
         },
         order: function () {
 
