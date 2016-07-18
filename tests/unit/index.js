@@ -230,5 +230,15 @@ describe('sqlSelect', function () {
         it('must be a function', function () {
             expect(typeof sqlString.toString).toBe('function');
         });
+
+        it('must return a string', function () {
+            expect(sqlString.columns('id').toString()).toBe('SELECT id;');
+            expect(sqlString.from('test').toString()).toBe('SELECT id FROM test;');
+            expect(sqlString.from({label: 'test'}).toString()).toBe('SELECT id FROM test;');
+            expect(sqlString.from({
+                label: 'test',
+                alias: 't'
+            }).toString()).toBe('SELECT id FROM test AS t;');
+        });
     });
 });
