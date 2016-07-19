@@ -232,13 +232,23 @@ describe('sqlSelect', function () {
         });
 
         it('must return a string', function () {
-            expect(sqlString.columns('id').toString()).toBe('SELECT id;');
-            expect(sqlString.from('test').toString()).toBe('SELECT id FROM test;');
-            expect(sqlString.from({label: 'test'}).toString()).toBe('SELECT id FROM test;');
-            expect(sqlString.from({
-                label: 'test',
-                alias: 't'
-            }).toString()).toBe('SELECT id FROM test AS t;');
+            sqlString
+                .columns('id');
+            expect(sqlString.toString()).toBe('SELECT id;');
+            sqlString
+                .columns('id')
+                .from('test');
+            expect(sqlString.toString()).toBe('SELECT id FROM test;');
+            sqlString
+                .columns(['name', {
+                    label: 'age',
+                    alias: 'a'
+                }])
+                .from({
+                    label: 'test',
+                    alias: 't'
+                });
+            expect(sqlString.toString()).toBe('SELECT name, age AS a FROM test AS t;');
         });
     });
 });
