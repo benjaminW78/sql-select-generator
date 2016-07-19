@@ -307,7 +307,7 @@ describe('sqlSelect', function () {
             expect(typeof sqlString.toString).toBe('function');
         });
 
-        it('must return a string', function () {
+        it('must return a string for columns and from parts', function () {
             sqlString
                 .columns('id');
             expect(sqlString.toString()).toBe('SELECT id;');
@@ -325,6 +325,41 @@ describe('sqlSelect', function () {
                     alias: 't'
                 });
             expect(sqlString.toString()).toBe('SELECT name, age AS a FROM test AS t;');
+        });
+
+        it('must return a string for order part', function () {
+            sqlString
+                .columns(['name'])
+                .from('test')
+                .order('name');
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name;');
+            sqlString
+                .columns(['name'])
+                .from('test')
+                .order({
+                    label: 'name',
+                    order: 'DESC'
+                });
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC;');
+            sqlString
+                .columns(['name'])
+                .from('test')
+                .order([{
+                    label: 'name',
+                    order: 'DESC'
+                }, 'id']);
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id;');
+            sqlString
+                .columns(['name'])
+                .from('test')
+                .order([{
+                    label: 'name',
+                    order: 'DESC'
+                }, {
+                    label: 'id',
+                    order: 'ASC'
+                }]);
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id ASC;');
         });
     });
 });

@@ -58,14 +58,14 @@ module.exports = function () {
         let resultString = '';
 
         if (undefined !== columns && 0 < columns.length) {
-            resultString += ' ORDER ';
+            resultString += ' ORDER BY ';
             columns.forEach(function (column, index) {
                 if (0 !== index) {
                     resultString += ', ';
                 }
                 resultString += column.label;
                 if (undefined !== column.order) {
-                    resultString += ' AS ' + column.order;
+                    resultString += ' ' + column.order;
                 }
             });
         }
