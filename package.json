@@ -1,6 +1,6 @@
 {
   "name": "sql-select-generator",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "subdomain": "",
   "repository": {
     "type": "git",
