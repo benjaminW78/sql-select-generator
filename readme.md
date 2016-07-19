@@ -16,8 +16,7 @@ For the moment, look in tests, this tool is not ready to use. Even in developmen
 
 ```javascript
 const
-    sqlSelect = require('sql-select-generator'),
-    sqlString = sqlSelect();
+    sqlString = require('sql-select-generator')();
 
 sqlString
     .columns(['id', {
@@ -36,6 +35,18 @@ sqlString
 console.log(sqlString);
 // SELECT id, name AS n FROM test AS t ORDER BY name DESC;
 ```
+
+### Construct
+Requiring the module will provide a function you can call to get a fresh new instance of sql generator object.
+
+### Get the generated request
+The object, got from calling the method provided by module, come with a toString method. So just put it like in the example above.
+
+### columns
+You can provide just a string, an object with label property (mandatory) and alias property (optionnal). Or an array of these mixed.
+
+### order
+You can provide just a string, an object with label property (mandatory) and direction property (optionnal). Or an array of these mixed.
 
 ## Licence
 
