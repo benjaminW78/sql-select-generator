@@ -361,5 +361,11 @@ describe('sqlSelect', function () {
                 }]);
             expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id ASC;');
         });
+
+        it('must return a string for non valid usage', function () {
+            sqlString
+                .from('test');
+            expect(sqlString.toString()).toBe('SELECT  FROM test;');
+        });
     });
 });
