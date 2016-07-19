@@ -63,9 +63,6 @@ describe('sqlSelect', function () {
                 sqlString.from({});
             }).toThrow();
             expect(function () {
-                sqlString.from({});
-            }).toThrow();
-            expect(function () {
                 sqlString.from({alias: 'bar'});
             }).toThrow();
             expect(function () {
@@ -171,9 +168,6 @@ describe('sqlSelect', function () {
                 sqlString.columns({});
             }).toThrow();
             expect(function () {
-                sqlString.columns({});
-            }).toThrow();
-            expect(function () {
                 sqlString.columns({alias: 'bar'});
             }).toThrow();
             expect(function () {
@@ -219,6 +213,88 @@ describe('sqlSelect', function () {
 
         it('must be a function', function () {
             expect(typeof sqlString.order).toBe('function');
+        });
+
+        it('must return an object', function () {
+            expect(typeof sqlString.order('id')).toBe('object');
+            expect(typeof sqlString.order(['id'])).toBe('object');
+            expect(typeof sqlString.order(['name', 'age'])).toBe('object');
+            expect(typeof sqlString.order({label: 'id'})).toBe('object');
+            expect(typeof sqlString.order({
+                label: 'id',
+                order: 'DESC'
+            })).toBe('object');
+            expect(typeof sqlString.order([{
+                label: 'id',
+                order: 'DESC'
+            }, {
+                label: 'name'
+            }])).toBe('object');
+            expect(typeof sqlString.order(['id', {
+                label: 'name',
+                order: 'DESC'
+            }])).toBe('object');
+            expect(typeof sqlString.order([{
+                label: 'id'
+            }, 'name'])).toBe('object');
+            expect(typeof sqlString.order([{
+                label: 'id',
+                order: 'DESC'
+            }, 'name', {
+                label: 'age',
+                order: 'ASC'
+            }])).toBe('object');
+            expect(typeof sqlString.order(['id', {
+                label: 'name'
+            }, 'age'])).toBe('object');
+        });
+
+        it('must throw an exception', function () {
+            expect(function () {
+                sqlString.order();
+            }).toThrow();
+            expect(function () {
+                sqlString.order('');
+            }).toThrow();
+            expect(function () {
+                sqlString.order({});
+            }).toThrow();
+            expect(function () {
+                sqlString.order({alias: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.order(null);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(NaN);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(true);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(false);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(0);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(1);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(-1);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(42);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(-18);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(Infinity);
+            }).toThrow();
+            expect(function () {
+                sqlString.order(-Infinity);
+            }).toThrow();
         });
     });
 
