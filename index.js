@@ -10,7 +10,7 @@ module.exports = function () {
 
     function columnsToString() {
         const
-            columns = description.columns.list;
+            columns = description.columns;
         let resultString = 'SELECT ';
 
         if (undefined !== columns && 0 < columns.length) {
@@ -43,10 +43,40 @@ module.exports = function () {
         return resultString;
     }
 
+    function joinToString() {
+        const
+            from = description.from;
+        // let resultString = '';
+        //
+        // return resultString;
+        return '';
+    }
+
+    function orderToString() {
+        const
+            columns = description.order;
+        let resultString = '';
+
+        if (undefined !== columns && 0 < columns.length) {
+            resultString += ' ORDER ';
+            columns.forEach(function (column, index) {
+                if (0 !== index) {
+                    resultString += ', ';
+                }
+                resultString += column.label;
+                if (undefined !== column.order) {
+                    resultString += ' AS ' + column.order;
+                }
+            });
+        }
+
+        return resultString;
+    }
+
     return {
         from: function (origin) {
             const
-                localErrorBadArguments = errorBadArguments + ' #from() need a non-empty string argument or object with label property at least.',
+                localErrorBadArguments = errorBadArguments + ' #from() need a non-empty string argument or object, with label, property at least.',
                 result = {};
 
             if ('string' === typeof origin && '' !== origin.trim()) {
@@ -73,10 +103,8 @@ module.exports = function () {
         },
         columns: function (columns) {
             const
-                localErrorBadArguments = errorBadArguments + ' #from() need a non-empty string argument or object with label property at least.',
-                result = {
-                    list: []
-                };
+                localErrorBadArguments = errorBadArguments + ' #columns() need a non-empty string argument or object, with label property, at least.',
+                result = [];
             let columnsTmp = columns;
 
             if (!Array.isArray(columns)) {
@@ -85,7 +113,7 @@ module.exports = function () {
 
             columnsTmp.forEach(function (column) {
                 if ('string' === typeof column && '' !== column.trim()) {
-                    result.list.push({
+                    result.push({
                         label: column
                     });
                 } else if ('object' === typeof column) {
@@ -97,7 +125,7 @@ module.exports = function () {
                         if (undefined !== column.alias) {
                             resultTmp.alias = column.alias;
                         }
-                        result.list.push(resultTmp);
+                        result.push(resultTmp);
                     } else {
                         throw localErrorBadArguments;
                     }
@@ -110,14 +138,50 @@ module.exports = function () {
 
             return this;
         },
-        order: function () {
+        order: function (columns) {
+            const
+                localErrorBadArguments = errorBadArguments + ' #order() need a non-empty string argument or object, with label property, at least.',
+                result = [];
+            let columnsTmp = columns;
 
+            if (!Array.isArray(columns)) {
+                columnsTmp = [columns];
+            }
+
+            columnsTmp.forEach(function (column) {
+                if ('string' === typeof column && '' !== column.trim()) {
+                    result.push({
+                        label: column
+                    });
+                } else if ('object' === typeof column) {
+                    if ('string' === typeof column.label && '' !== column.label.trim()) {
+                        const
+                            resultTmp = {};
+
+                        resultTmp.label = column.label.trim();
+                        if (undefined !== column.order) {
+                            resultTmp.order = column.order;
+                        }
+                        result.push(resultTmp);
+                    } else {
+                        throw localErrorBadArguments;
+                    }
+                } else {
+                    throw localErrorBadArguments;
+                }
+            });
+
+            description.order = result;
+
+            return this;
         },
         toString: function () {
             let result = '';
 
             result += columnsToString();
             result += fromToString();
+            result += joinToString();
+            result += orderToString();
             result += ';';
 
             return result;
