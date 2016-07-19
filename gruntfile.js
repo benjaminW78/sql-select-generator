@@ -1,6 +1,7 @@
 /*globals module, require */
 
-const loadGruntTasks = require('load-grunt-tasks'),
+const 
+    loadGruntTasks = require('load-grunt-tasks'),
     timeGrunt = require('time-grunt');
 
 module.exports = function (grunt) {
