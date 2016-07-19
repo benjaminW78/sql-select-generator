@@ -8,6 +8,41 @@ module.exports = function () {
         errorBadArguments = errorPrefix + 'Bad arguments.',
         description = {};
 
+    function columnsToString() {
+        const
+            columns = description.columns.list;
+        let resultString = 'SELECT ';
+
+        if (undefined !== columns && 0 < columns.length) {
+            columns.forEach(function (column, index) {
+                if (0 !== index) {
+                    resultString += ', ';
+                }
+                resultString += column.label;
+                if (undefined !== column.alias) {
+                    resultString += ' AS ' + column.alias;
+                }
+            });
+        }
+
+        return resultString;
+    }
+
+    function fromToString() {
+        const
+            from = description.from;
+        let resultString = '';
+
+        if (undefined !== from) {
+            resultString += ' FROM ' + from.label;
+            if (undefined !== from.alias) {
+                resultString += ' AS ' + from.alias;
+            }
+        }
+
+        return resultString;
+    }
+
     return {
         from: function (origin) {
             const
@@ -79,7 +114,13 @@ module.exports = function () {
 
         },
         toString: function () {
+            let result = '';
 
+            result += columnsToString();
+            result += fromToString();
+            result += ';';
+
+            return result;
         }
     };
 };
