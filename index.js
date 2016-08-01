@@ -188,7 +188,7 @@ module.exports = function () {
         columns: function (columns) {
             const
                 localErrorBadArguments = errorBadArguments + ' #columns() need a non-empty string argument or object, with label property, at least.',
-                result = [];
+                result = description.columns || [];
             let columnsTmp = columns;
 
             if (!Array.isArray(columns)) {
@@ -225,7 +225,7 @@ module.exports = function () {
         order: function (columns) {
             const
                 localErrorBadArguments = errorBadArguments + ' #order() need a non-empty string argument or object, with label property, at least.',
-                result = [];
+                result = description.order || [];
             let columnsTmp = columns;
 
             if (!Array.isArray(columns)) {
