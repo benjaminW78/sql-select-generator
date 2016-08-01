@@ -70,6 +70,18 @@ module.exports = function () {
 
         return resultString;
     }
+    
+    function whereToString() {
+        const
+            condition = description.where;
+        let resultString = '';
+
+        if (undefined !== condition) {
+            resultString += ' WHERE ' + condition;
+        }
+
+        return resultString;
+    }
 
     function joinToString() {
         const
@@ -121,12 +133,12 @@ module.exports = function () {
                 localErrorBadArguments = errorBadArguments + ' #from() need a non-empty string argument or object, with label, property at least.',
                 result = {};
 
-            if ('string' === typeof origin && '' !== origin.trim()) {
+            if (isStringCool(origin)) {
                 result.label = origin.trim();
             } else if ('object' === typeof origin) {
-                if ('string' === typeof origin.label && '' !== origin.label.trim()) {
+                if (isStringCool(origin.label)) {
                     result.label = origin.label.trim();
-                    if (undefined !== origin.alias) {
+                    if (isStringCool(origin.alias)) {
                         result.alias = origin.alias;
                     }
                 } else {
@@ -137,6 +149,21 @@ module.exports = function () {
             }
 
             description.from = result;
+
+            return this;
+        },
+        where: function (condition) {
+            const
+                localErrorBadArguments = errorBadArguments + ' #where() need a non-empty string argument property.';
+            let result = '';
+
+            if (isStringCool(condition)) {
+                result = condition.trim();
+            } else {
+                throw localErrorBadArguments;
+            }
+
+            description.where = result;
 
             return this;
         },
@@ -265,6 +292,7 @@ module.exports = function () {
             result += columnsToString();
             result += fromToString();
             result += joinToString();
+            result += whereToString();
             result += orderToString();
             result += ';';
 
