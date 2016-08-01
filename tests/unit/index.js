@@ -163,6 +163,66 @@ describe('sqlSelect', function () {
         });
     });
 
+    describe('#useLowercase', function () {
+        beforeEach(function () {
+            sqlString = sqlSelect();
+        });
+
+        it('must be a function', function () {
+            expect(typeof sqlString.useLowercase).toBe('function');
+        });
+
+        it('must return an object', function () {
+            expect(typeof sqlString.useLowercase(true)).toBe('object');
+            expect(typeof sqlString.useLowercase(false)).toBe('object');
+        });
+
+        it('must throw an exception', function () {
+            expect(function () {
+                sqlString.useLowercase();
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase('');
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase('id');
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase({});
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase({alias: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(null);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(NaN);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(0);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(1);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(-1);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(42);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(-18);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(Infinity);
+            }).toThrow();
+            expect(function () {
+                sqlString.useLowercase(-Infinity);
+            }).toThrow();
+        });
+    });
+
     describe('#join', function () {
         beforeEach(function () {
             sqlString = sqlSelect();
@@ -464,7 +524,7 @@ describe('sqlSelect', function () {
         });
     });
 
-    describe('#toString', function () {
+    describe('#toString upperCase', function () {
         beforeEach(function () {
             sqlString = sqlSelect();
         });
