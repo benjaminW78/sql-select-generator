@@ -100,7 +100,7 @@ describe('sqlSelect', function () {
             }).toThrow();
         });
     });
-    
+
     describe('#where', function () {
         beforeEach(function () {
             sqlString = sqlSelect();
@@ -524,7 +524,7 @@ describe('sqlSelect', function () {
         });
     });
 
-    describe('#toString upperCase', function () {
+    describe('#toString', function () {
         beforeEach(function () {
             sqlString = sqlSelect();
         });
@@ -533,90 +533,278 @@ describe('sqlSelect', function () {
             expect(typeof sqlString.toString).toBe('function');
         });
 
-        it('must return a string for columns and from parts', function () {
-            sqlString
-                .columns('id');
-            expect(sqlString.toString()).toBe('SELECT id;');
-            sqlString
-                .columns('address')
-                .from('test');
-            expect(sqlString.toString()).toBe('SELECT id, address FROM test;');
-            sqlString
-                .columns(['name', {
-                    label: 'age',
-                    alias: 'a'
-                }])
-                .from({
-                    label: 'test',
-                    alias: 't'
-                });
-            expect(sqlString.toString()).toBe('SELECT id, address, name, age AS a FROM test AS t;');
+        describe('-uppercase by default', function () {
+            it('must return a string for columns and from parts', function () {
+                sqlString
+                    .columns('id');
+                expect(sqlString.toString()).toBe('SELECT id;');
+                sqlString
+                    .columns('address')
+                    .from('test');
+                expect(sqlString.toString()).toBe('SELECT id, address FROM test;');
+                sqlString
+                    .columns(['name', {
+                        label: 'age',
+                        alias: 'a'
+                    }])
+                    .from({
+                        label: 'test',
+                        alias: 't'
+                    });
+                expect(sqlString.toString()).toBe('SELECT id, address, name, age AS a FROM test AS t;');
+            });
+
+            it('must return a string for where parts', function () {
+                sqlString
+                    .columns('id')
+                    .from('test')
+                    .where('id = 3');
+                expect(sqlString.toString()).toBe('SELECT id FROM test WHERE id = 3;');
+            });
+
+            it('must return a string for order part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .order('name');
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name;');
+                sqlString
+                    .order({
+                        label: 'id',
+                        order: 'DESC'
+                    });
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC;');
+                sqlString
+                    .order([{
+                        label: 'address',
+                        order: 'ASC'
+                    }, 'phone']);
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone;');
+                sqlString
+                    .order([{
+                        label: 'city',
+                        order: 'DESC'
+                    }, {
+                        label: 'country',
+                        order: 'ASC'
+                    }]);
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone, city DESC, country ASC;');
+            });
+
+            it('must return a string for join part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .join({
+                        label: 'linked',
+                        'on': 'example.id = linked.e_id'
+                    })
+                    .join([{
+                        label: 'linkedBis',
+                        alias: 'lB',
+                        'on': 'example.id = lB.e_id'
+                    }, {
+                        label: 'otherLinked',
+                        'using': 'id'
+                    }, {
+                        label: 'otherLinkedBis',
+                        alias: 'oLBis',
+                        'using': 'id'
+                    }]);
+                expect(sqlString.toString()).toBe('SELECT name FROM test JOIN linked ON (example.id = linked.e_id) JOIN linkedBis AS lB ON (example.id = lB.e_id) JOIN otherLinked USING (id) JOIN otherLinkedBis AS oLBis USING (id);');
+            });
+
+            it('must return a string for non valid usage (STUPIDITY)', function () {
+                sqlString
+                    .from('test');
+                expect(sqlString.toString()).toBe('SELECT  FROM test;');
+            });
         });
 
-        it('must return a string for where parts', function () {
-            sqlString
-                .columns('id')
-                .from('test')
-                .where('id = 3');
-            expect(sqlString.toString()).toBe('SELECT id FROM test WHERE id = 3;');
+        describe('-uppercase forced', function () {
+            beforeEach(function () {
+                sqlString = sqlSelect();
+                sqlString.useLowercase(false);
+            });
+
+            it('must return a string for columns and from parts', function () {
+                sqlString
+                    .columns('id');
+                expect(sqlString.toString()).toBe('SELECT id;');
+                sqlString
+                    .columns('address')
+                    .from('test');
+                expect(sqlString.toString()).toBe('SELECT id, address FROM test;');
+                sqlString
+                    .columns(['name', {
+                        label: 'age',
+                        alias: 'a'
+                    }])
+                    .from({
+                        label: 'test',
+                        alias: 't'
+                    });
+                expect(sqlString.toString()).toBe('SELECT id, address, name, age AS a FROM test AS t;');
+            });
+
+            it('must return a string for where parts', function () {
+                sqlString
+                    .columns('id')
+                    .from('test')
+                    .where('id = 3');
+                expect(sqlString.toString()).toBe('SELECT id FROM test WHERE id = 3;');
+            });
+
+            it('must return a string for order part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .order('name');
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name;');
+                sqlString
+                    .order({
+                        label: 'id',
+                        order: 'DESC'
+                    });
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC;');
+                sqlString
+                    .order([{
+                        label: 'address',
+                        order: 'ASC'
+                    }, 'phone']);
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone;');
+                sqlString
+                    .order([{
+                        label: 'city',
+                        order: 'DESC'
+                    }, {
+                        label: 'country',
+                        order: 'ASC'
+                    }]);
+                expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone, city DESC, country ASC;');
+            });
+
+            it('must return a string for join part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .join({
+                        label: 'linked',
+                        'on': 'example.id = linked.e_id'
+                    })
+                    .join([{
+                        label: 'linkedBis',
+                        alias: 'lB',
+                        'on': 'example.id = lB.e_id'
+                    }, {
+                        label: 'otherLinked',
+                        'using': 'id'
+                    }, {
+                        label: 'otherLinkedBis',
+                        alias: 'oLBis',
+                        'using': 'id'
+                    }]);
+                expect(sqlString.toString()).toBe('SELECT name FROM test JOIN linked ON (example.id = linked.e_id) JOIN linkedBis AS lB ON (example.id = lB.e_id) JOIN otherLinked USING (id) JOIN otherLinkedBis AS oLBis USING (id);');
+            });
+
+            it('(STUPIDITY) must return a string for non valid usage', function () {
+                sqlString
+                    .from('test');
+                expect(sqlString.toString()).toBe('SELECT  FROM test;');
+            });
         });
 
-        it('must return a string for order part', function () {
-            sqlString
-                .columns(['name'])
-                .from('test')
-                .order('name');
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name;');
-            sqlString
-                .order({
-                    label: 'id',
-                    order: 'DESC'
-                });
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC;');
-            sqlString
-                .order([{
-                    label: 'address',
-                    order: 'ASC'
-                }, 'phone']);
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone;');
-            sqlString
-                .order([{
-                    label: 'city',
-                    order: 'DESC'
-                }, {
-                    label: 'country',
-                    order: 'ASC'
-                }]);
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone, city DESC, country ASC;');
-        });
+        describe('-lowercase', function () {
+            beforeEach(function () {
+                sqlString = sqlSelect();
+                sqlString.useLowercase(true);
+            });
 
-        it('must return a string for join part', function () {
-            sqlString
-                .columns(['name'])
-                .from('test')
-                .join({
-                    label: 'linked',
-                    'on': 'example.id = linked.e_id'
-                })
-                .join([{
-                    label: 'linkedBis',
-                    alias: 'lB',
-                    'on': 'example.id = lB.e_id'
-                }, {
-                    label: 'otherLinked',
-                    'using': 'id'
-                }, {
-                    label: 'otherLinkedBis',
-                    alias: 'oLBis',
-                    'using': 'id'
-                }]);
-            expect(sqlString.toString()).toBe('SELECT name FROM test JOIN linked ON (example.id = linked.e_id) JOIN linkedBis AS lB ON (example.id = lB.e_id) JOIN otherLinked USING (id) JOIN otherLinkedBis AS oLBis USING (id);');
-        });
+            it('must return a string for columns and from parts', function () {
+                sqlString
+                    .columns('id');
+                expect(sqlString.toString()).toBe('select id;');
+                sqlString
+                    .columns('address')
+                    .from('test');
+                expect(sqlString.toString()).toBe('select id, address from test;');
+                sqlString
+                    .columns(['name', {
+                        label: 'age',
+                        alias: 'a'
+                    }])
+                    .from({
+                        label: 'test',
+                        alias: 't'
+                    });
+                expect(sqlString.toString()).toBe('select id, address, name, age as a from test as t;');
+            });
 
-        it('must return a string for non valid usage', function () {
-            sqlString
-                .from('test');
-            expect(sqlString.toString()).toBe('SELECT  FROM test;');
+            it('must return a string for where parts', function () {
+                sqlString
+                    .columns('id')
+                    .from('test')
+                    .where('id = 3');
+                expect(sqlString.toString()).toBe('select id from test where id = 3;');
+            });
+
+            it('must return a string for order part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .order('name');
+                expect(sqlString.toString()).toBe('select name from test order by name;');
+                sqlString
+                    .order({
+                        label: 'id',
+                        order: 'desc'
+                    });
+                expect(sqlString.toString()).toBe('select name from test order by name, id desc;');
+                sqlString
+                    .order([{
+                        label: 'address',
+                        order: 'asc'
+                    }, 'phone']);
+                expect(sqlString.toString()).toBe('select name from test order by name, id desc, address asc, phone;');
+                sqlString
+                    .order([{
+                        label: 'city',
+                        order: 'desc'
+                    }, {
+                        label: 'country',
+                        order: 'asc'
+                    }]);
+                expect(sqlString.toString()).toBe('select name from test order by name, id desc, address asc, phone, city desc, country asc;');
+            });
+
+            it('must return a string for join part', function () {
+                sqlString
+                    .columns(['name'])
+                    .from('test')
+                    .join({
+                        label: 'linked',
+                        'on': 'example.id = linked.e_id'
+                    })
+                    .join([{
+                        label: 'linkedBis',
+                        alias: 'lB',
+                        'on': 'example.id = lB.e_id'
+                    }, {
+                        label: 'otherLinked',
+                        'using': 'id'
+                    }, {
+                        label: 'otherLinkedBis',
+                        alias: 'oLBis',
+                        'using': 'id'
+                    }]);
+                expect(sqlString.toString()).toBe('select name from test join linked on (example.id = linked.e_id) join linkedBis as lB on (example.id = lB.e_id) join otherLinked using (id) join otherLinkedBis as oLBis using (id);');
+            });
+
+            it('(STUPIDITY) must return a string for non valid usage', function () {
+                sqlString
+                    .from('test');
+                expect(sqlString.toString()).toBe('select  from test;');
+            });
         });
     });
 });
