@@ -614,7 +614,7 @@ describe('sqlSelect', function () {
                 expect(sqlString.toString()).toBe('SELECT name FROM test JOIN linked ON (example.id = linked.e_id) JOIN linkedBis AS lB ON (example.id = lB.e_id) JOIN otherLinked USING (id) JOIN otherLinkedBis AS oLBis USING (id);');
             });
 
-            it('must return a string for non valid usage (STUPIDITY)', function () {
+            it('(STUPIDITY) must return a string for non valid usage', function () {
                 sqlString
                     .from('test');
                 expect(sqlString.toString()).toBe('SELECT  FROM test;');
