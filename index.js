@@ -15,7 +15,7 @@ module.exports = function () {
         return ('string' === typeof str && '' !== str.trim());
     }
 
-    function addKeywork(keywordStr) {
+    function addKeyword(keywordStr) {
         return config.uppercase ? keywordStr : keywordStr.toLowerCase();
     }
 
@@ -46,7 +46,7 @@ module.exports = function () {
     function columnsToString() {
         const
             columns = description.columns;
-        let resultString = 'SELECT ';
+        let resultString = addKeyword('SELECT ');
 
         if (undefined !== columns && 0 < columns.length) {
             columns.forEach(function (column, index) {
@@ -55,7 +55,7 @@ module.exports = function () {
                 }
                 resultString += column.label;
                 if (undefined !== column.alias) {
-                    resultString += ' AS ' + column.alias;
+                    resultString += addKeyword(' AS ') + column.alias;
                 }
             });
         }
@@ -69,9 +69,9 @@ module.exports = function () {
         let resultString = '';
 
         if (undefined !== from) {
-            resultString += ' FROM ' + from.label;
+            resultString += addKeyword(' FROM ') + from.label;
             if (undefined !== from.alias) {
-                resultString += ' AS ' + from.alias;
+                resultString += addKeyword(' AS ') + from.alias;
             }
         }
 
@@ -84,7 +84,7 @@ module.exports = function () {
         let resultString = '';
 
         if (undefined !== condition) {
-            resultString += ' WHERE ' + condition;
+            resultString += addKeyword(' WHERE ') + condition;
         }
 
         return resultString;
@@ -97,15 +97,15 @@ module.exports = function () {
 
         if (undefined !== tables && 0 < tables.length) {
             tables.forEach(function (table) {
-                resultString += ' JOIN ' + table.label;
+                resultString += addKeyword(' JOIN ') + table.label;
                 if (undefined !== table.alias) {
-                    resultString += ' AS ' + table.alias;
+                    resultString += addKeyword(' AS ') + table.alias;
                 }
                 if (undefined !== table.using) {
-                    resultString += ' USING (' + table.using + ')';
+                    resultString += addKeyword(' USING (') + table.using + ')';
                 }
                 if (undefined !== table.on) {
-                    resultString += ' ON (' + table.on + ')';
+                    resultString += addKeyword(' ON (') + table.on + ')';
                 }
             });
         }
@@ -119,7 +119,7 @@ module.exports = function () {
         let resultString = '';
 
         if (undefined !== columns && 0 < columns.length) {
-            resultString += ' ORDER BY ';
+            resultString += addKeyword(' ORDER BY ');
             columns.forEach(function (column, index) {
                 if (0 !== index) {
                     resultString += ', ';
@@ -310,7 +310,7 @@ module.exports = function () {
                 localErrorBadArguments = errorBadArguments + ' #useLowercase() need a boolean argument property.';
 
             if ('boolean' === typeof usage) {
-                config.uppercase = usage;
+                config.uppercase = !usage;
             } else {
                 throw localErrorBadArguments;
             }
