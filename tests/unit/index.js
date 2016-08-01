@@ -113,12 +113,12 @@ describe('sqlSelect', function () {
         it('must return an object', function () {
             expect(typeof sqlString.join({
                 label: 'linked',
-                'on': '(example.id = linked.e_id)'
+                'on': 'example.id = linked.e_id'
             })).toBe('object');
             expect(typeof sqlString.join({
                 label: 'linkedBis',
                 alias: 'lB',
-                'on': '(example.id = lB.e_id)'
+                'on': 'example.id = lB.e_id'
             })).toBe('object');
             expect(typeof sqlString.join({
                 label: 'otherLinked',
@@ -464,6 +464,29 @@ describe('sqlSelect', function () {
                     order: 'ASC'
                 }]);
             expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id ASC;');
+        });
+
+        it('must return a string for join part', function () {
+            sqlString
+                .columns(['name'])
+                .from('test')
+                .join({
+                    label: 'linked',
+                    'on': 'example.id = linked.e_id'
+                })
+                .join([{
+                    label: 'linkedBis',
+                    alias: 'lB',
+                    'on': 'example.id = lB.e_id'
+                }, {
+                    label: 'otherLinked',
+                    'using': 'id'
+                }, {
+                    label: 'otherLinkedBis',
+                    alias: 'oLBis',
+                    'using': 'id'
+                }]);
+            expect(sqlString.toString()).toBe('SELECT name FROM test JOIN linked ON (example.id = linked.e_id) JOIN linkedBis AS lB ON (example.id = lB.e_id) JOIN otherLinked USING (id) JOIN otherLinkedBis AS oLBis USING (id);');
         });
 
         it('must return a string for non valid usage', function () {
