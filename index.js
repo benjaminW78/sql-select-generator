@@ -73,11 +73,25 @@ module.exports = function () {
 
     function joinToString() {
         const
-            from = description.from;
-        // let resultString = '';
-        //
-        // return resultString;
-        return '';
+            tables = description.tables;
+        let resultString = '';
+
+        if (undefined !== tables && 0 < tables.length) {
+            tables.forEach(function (table) {
+                resultString += ' JOIN ' + table.label;
+                if (undefined !== table.alias) {
+                    resultString += ' AS ' + table.alias;
+                }
+                if (undefined !== table.using) {
+                    resultString += ' USING (' + table.using + ')';
+                }
+                if (undefined !== table.on) {
+                    resultString += ' ON (' + table.on + ')';
+                }
+            });
+        }
+
+        return resultString;
     }
 
     function orderToString() {
@@ -129,7 +143,7 @@ module.exports = function () {
         join: function (tables) {
             const
                 localErrorBadArguments = errorBadArguments + ' #join() need a non-empty string argument or object, with label and on/using properties, at least.',
-                result = [];
+                result = description.tables || [];
             let tablesTmp = tables;
 
             if (!Array.isArray(tables)) {
