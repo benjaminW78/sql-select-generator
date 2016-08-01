@@ -416,9 +416,9 @@ describe('sqlSelect', function () {
                 .columns('id');
             expect(sqlString.toString()).toBe('SELECT id;');
             sqlString
-                .columns('id')
+                .columns('address')
                 .from('test');
-            expect(sqlString.toString()).toBe('SELECT id FROM test;');
+            expect(sqlString.toString()).toBe('SELECT id, address FROM test;');
             sqlString
                 .columns(['name', {
                     label: 'age',
@@ -428,7 +428,7 @@ describe('sqlSelect', function () {
                     label: 'test',
                     alias: 't'
                 });
-            expect(sqlString.toString()).toBe('SELECT name, age AS a FROM test AS t;');
+            expect(sqlString.toString()).toBe('SELECT id, address, name, age AS a FROM test AS t;');
         });
 
         it('must return a string for order part', function () {
@@ -438,32 +438,26 @@ describe('sqlSelect', function () {
                 .order('name');
             expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name;');
             sqlString
-                .columns(['name'])
-                .from('test')
                 .order({
-                    label: 'name',
+                    label: 'id',
                     order: 'DESC'
                 });
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC;');
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC;');
             sqlString
-                .columns(['name'])
-                .from('test')
                 .order([{
-                    label: 'name',
-                    order: 'DESC'
-                }, 'id']);
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id;');
+                    label: 'address',
+                    order: 'ASC'
+                }, 'phone']);
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone;');
             sqlString
-                .columns(['name'])
-                .from('test')
                 .order([{
-                    label: 'name',
+                    label: 'city',
                     order: 'DESC'
                 }, {
-                    label: 'id',
+                    label: 'country',
                     order: 'ASC'
                 }]);
-            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name DESC, id ASC;');
+            expect(sqlString.toString()).toBe('SELECT name FROM test ORDER BY name, id DESC, address ASC, phone, city DESC, country ASC;');
         });
 
         it('must return a string for join part', function () {
