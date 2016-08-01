@@ -4,12 +4,19 @@ module.exports = function () {
     'use strict';
 
     const
+        config = {
+            uppercase : true
+        },
         errorPrefix = '[sqlSelect] Error : ',
         errorBadArguments = errorPrefix + 'Bad arguments.',
         description = {};
 
     function isStringCool(str) {
         return ('string' === typeof str && '' !== str.trim());
+    }
+
+    function addKeywork(keywordStr) {
+        return config.uppercase ? keywordStr : keywordStr.toLowerCase();
     }
 
     /**
@@ -297,6 +304,18 @@ module.exports = function () {
             result += ';';
 
             return result;
+        },
+        useLowercase : function (usage) {
+            const
+                localErrorBadArguments = errorBadArguments + ' #useLowercase() need a boolean argument property.';
+
+            if ('boolean' === typeof usage) {
+                config.uppercase = usage;
+            } else {
+                throw localErrorBadArguments;
+            }
+
+            return this;
         }
     };
 };
