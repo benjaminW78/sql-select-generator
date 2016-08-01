@@ -7,8 +7,8 @@ jest.autoMockOff();
 /**
  let sqlString = sqlSelect()
  .from('example')
- .join({label: 'linked', as: 'l', on: '(example.id = l.e_id)'})
- .join({label: 'otherLinked', as: 'l', using: 'e_id', type: 'right'})
+ .join({label: 'linked', on: '(example.id = linked.e_id)'})
+ .join({label: 'otherLinked', as: 'ol', using: 'e_id', type: 'right'})
  .columns('id')
  .columns(['name', 'age'])
  .columns({label: 'address', alias: 'addr' })
@@ -108,6 +108,27 @@ describe('sqlSelect', function () {
 
         it('must be a function', function () {
             expect(typeof sqlString.join).toBe('function');
+        });
+
+        it('must return an object', function () {
+            expect(typeof sqlString.join({
+                label: 'linked',
+                'on': '(example.id = linked.e_id)'
+            })).toBe('object');
+            expect(typeof sqlString.join({
+                label: 'linkedBis',
+                alias: 'lB',
+                'on': '(example.id = lB.e_id)'
+            })).toBe('object');
+            expect(typeof sqlString.join({
+                label: 'otherLinked',
+                'using': 'id'
+            })).toBe('object');
+            expect(typeof sqlString.join({
+                label: 'otherLinkedBis',
+                alias: 'oLBis',
+                'using': 'id'
+            })).toBe('object');
         });
     });
 
