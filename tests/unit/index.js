@@ -100,6 +100,68 @@ describe('sqlSelect', function () {
             }).toThrow();
         });
     });
+    
+    describe('#where', function () {
+        beforeEach(function () {
+            sqlString = sqlSelect();
+        });
+
+        it('must be a function', function () {
+            expect(typeof sqlString.where).toBe('function');
+        });
+
+        it('must return an object', function () {
+            expect(typeof sqlString.where('id = 2')).toBe('object');
+        });
+
+        it('must throw an exception', function () {
+            expect(function () {
+                sqlString.where();
+            }).toThrow();
+            expect(function () {
+                sqlString.where('');
+            }).toThrow();
+            expect(function () {
+                sqlString.where({});
+            }).toThrow();
+            expect(function () {
+                sqlString.where({alias: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.where(null);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(NaN);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(true);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(false);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(0);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(1);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(-1);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(42);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(-18);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(Infinity);
+            }).toThrow();
+            expect(function () {
+                sqlString.where(-Infinity);
+            }).toThrow();
+        });
+    });
 
     describe('#join', function () {
         beforeEach(function () {
