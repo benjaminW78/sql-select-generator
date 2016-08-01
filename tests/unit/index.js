@@ -130,6 +130,89 @@ describe('sqlSelect', function () {
                 'using': 'id'
             })).toBe('object');
         });
+
+        it('must throw an exception', function () {
+            expect(function () {
+                sqlString.join();
+            }).toThrow();
+            expect(function () {
+                sqlString.join('');
+            }).toThrow();
+            expect(function () {
+                sqlString.join({});
+            }).toThrow();
+            expect(function () {
+                sqlString.join({label: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.join({alias: 'bar'});
+            }).toThrow();
+            expect(function () {
+                sqlString.join({
+                    label: 'bar',
+                    alias: 'bar'
+                });
+            }).toThrow();
+            expect(function () {
+                sqlString.join({
+                    alias: 'bar',
+                    using: 'id'
+                });
+            }).toThrow();
+            expect(function () {
+                sqlString.join({
+                    alias: 'bar',
+                    'on': 'id'
+                });
+            }).toThrow();
+            expect(function () {
+                sqlString.join({
+                    alias: 'bar',
+                    'on': 'bar.id = t.id',
+                    using: 'id'
+                });
+            }).toThrow();
+            expect(function () {
+                sqlString.join({
+                    alias: 'label',
+                    'on': 'bar.id = t.id',
+                    using: 'id'
+                });
+            }).toThrow();
+            expect(function () {
+                sqlString.join(null);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(NaN);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(true);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(false);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(0);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(1);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(-1);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(42);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(-18);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(Infinity);
+            }).toThrow();
+            expect(function () {
+                sqlString.join(-Infinity);
+            }).toThrow();
+        });
     });
 
     describe('#columns', function () {
