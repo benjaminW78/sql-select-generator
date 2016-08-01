@@ -1,6 +1,6 @@
 # sql-select-generator [![Build Status](https://travis-ci.org/MathRobin/sql-select-generator.svg)](https://travis-ci.org/MathRobin/sql-select-generator) [![Code Climate](https://codeclimate.com/github/MathRobin/sql-select-generator/badges/gpa.svg)](https://codeclimate.com/github/MathRobin/sql-select-generator)
 
-SQL query SELECT generator
+SQL query string SELECT generator
 
 Fully designed with TDD. Not production ready for the moment.
 
@@ -35,6 +35,14 @@ sqlString
 console.log(sqlString);
 // SELECT id, name AS n FROM test AS t ORDER BY name DESC;
 ```
+
+### Stupidity
+
+This tool doesn't prevent misusage and stupidity. So if your request contains, for example, a call to `join` method but no one to `from` method, your request will probably not work. No warning or error will be provided from this tool for the moment.
+
+Another example, if you ask your request to select a column name and this one is not present in the from/join called tables, there will be no warnings or error.
+
+Remember this tool is an helper to build your SQL queries string. **Not a magic tool.**
 
 ### Construct
 Requiring the module will provide a function you can call to get a fresh new instance of sql generator object.
