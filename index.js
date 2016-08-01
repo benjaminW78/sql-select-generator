@@ -8,6 +8,34 @@ module.exports = function () {
         errorBadArguments = errorPrefix + 'Bad arguments.',
         description = {};
 
+    function isStringCool(str) {
+        return ('string' === typeof str && '' !== str.trim());
+    }
+
+    /**
+     * Simple implementation of XOR logical operator
+     *
+     * Here are test cases :
+     *  a = true, b = true
+     *  // !a != !b is false
+     *  a = false, b = false
+     *  // !a != !b is false
+     *  a = true, b = false
+     *  // !a != !b is true
+     *  a = false, b = true
+     *  // !a != !b is true
+     *
+     *  Not the simpliest to read but best to code and for performances
+     *
+     * @param firstCondition
+     * @param secondCondition
+     * @returns {boolean}
+     * @constructor
+     */
+    function xorOperator(firstCondition, secondCondition) {
+        return (!firstCondition !== !secondCondition);
+    }
+
     function columnsToString() {
         const
             columns = description.columns;
@@ -98,8 +126,50 @@ module.exports = function () {
 
             return this;
         },
-        join: function () {
+        join: function (tables) {
+            const
+                localErrorBadArguments = errorBadArguments + ' #join() need a non-empty string argument or object, with label and on/using properties, at least.',
+                result = [];
+            let tablesTmp = tables;
 
+            if (!Array.isArray(tables)) {
+                tablesTmp = [tables];
+            }
+
+            tablesTmp.forEach(function (table) {
+                if (isStringCool(table)) {
+                    result.push({
+                        label: table
+                    });
+                } else if ('object' === typeof table) {
+                    const
+                        testUsingOn = xorOperator(isStringCool(table.using), isStringCool(table.on));
+
+                    if (isStringCool(table.label) && testUsingOn) {
+                        const
+                            resultTmp = {};
+
+                        resultTmp.label = table.label.trim();
+                        if (isStringCool(table.alias)) {
+                            resultTmp.alias = table.alias;
+                        }
+                        if (isStringCool(table['on'])) {
+                            resultTmp['on'] = table['on'];
+                        } else {
+                            resultTmp.using = table.using;
+                        }
+                        result.push(resultTmp);
+                    } else {
+                        throw localErrorBadArguments;
+                    }
+                } else {
+                    throw localErrorBadArguments;
+                }
+            });
+
+            description.tables = result;
+
+            return this;
         },
         columns: function (columns) {
             const
@@ -112,17 +182,17 @@ module.exports = function () {
             }
 
             columnsTmp.forEach(function (column) {
-                if ('string' === typeof column && '' !== column.trim()) {
+                if (isStringCool(column)) {
                     result.push({
                         label: column
                     });
                 } else if ('object' === typeof column) {
-                    if ('string' === typeof column.label && '' !== column.label.trim()) {
+                    if (isStringCool(column.label)) {
                         const
                             resultTmp = {};
 
                         resultTmp.label = column.label.trim();
-                        if (undefined !== column.alias) {
+                        if (isStringCool(column.alias)) {
                             resultTmp.alias = column.alias;
                         }
                         result.push(resultTmp);
@@ -149,17 +219,17 @@ module.exports = function () {
             }
 
             columnsTmp.forEach(function (column) {
-                if ('string' === typeof column && '' !== column.trim()) {
+                if (isStringCool(column)) {
                     result.push({
                         label: column
                     });
                 } else if ('object' === typeof column) {
-                    if ('string' === typeof column.label && '' !== column.label.trim()) {
+                    if (isStringCool(column.label)) {
                         const
                             resultTmp = {};
 
                         resultTmp.label = column.label.trim();
-                        if (undefined !== column.order) {
+                        if (isStringCool(column.order)) {
                             resultTmp.order = column.order;
                         }
                         result.push(resultTmp);
