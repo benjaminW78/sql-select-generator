@@ -493,6 +493,14 @@ describe('sqlSelect', function () {
             expect(sqlString.toString()).toBe('SELECT id, address, name, age AS a FROM test AS t;');
         });
 
+        it('must return a string for where parts', function () {
+            sqlString
+                .columns('id')
+                .from('test')
+                .where('id = 3');
+            expect(sqlString.toString()).toBe('SELECT id FROM test WHERE id = 3;');
+        });
+
         it('must return a string for order part', function () {
             sqlString
                 .columns(['name'])
