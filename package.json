@@ -8,7 +8,8 @@
   },
   "domains": [],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "init": "npm i & /bin/bash ./git-hooks-versionned/deployHooks.sh development "
   },
   "jest": {
     "collectCoverage": true,
